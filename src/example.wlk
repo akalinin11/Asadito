@@ -1,26 +1,4 @@
 
-// comensal que sabe su posicion y los elementos que tiene cerca 
-// cada comensal tiene un criterio sordo-todos los elementos-cambiarPosicion- normales
-// toda la pinta a composicion
-// cuando paso el elemento deja de estar cerca
-
-
-
-// bandeja con UNA comida, te dice si es de carne y las cantidade de calorias
-// persona decide si comer depende de: vegetariano-dietetico-alternado-combinacion de condiciones
-// tambien parece que es composicion 
-
-
-
-// pipon mensaje a comensal si alguna de las comidas que ingirio es pesada>500
-
-
-
-// saber si un comensal la paso bien que depende de ciertas cuestiones
-
-
-//Teorica 
-
 class Posicion{
 	var property elementosQueTieneCerca = #{}
 	
@@ -52,20 +30,19 @@ class Comensal{
 		}
 		else{
 			
-			 (persona.criterioPersona()).hacerEfecto(self,persona,elemento)
+			 (persona.criterioPersona()).generarCambioElemento(self,persona,elemento)
  				
 		}
 	}
 
 	method comer(comida){
 		
-		if(self.validarCriterioComida(comida)){
+		if( not self.validarCriterioComida(comida)){
 			
-			self.registrarComida(comida)
-		}
-		
-		else{
 			throw new DomainException(message = "La persona no puede comer debido a su criterio")
+		}		
+		else{
+			 self.registrarComida(comida)
 		}
 	}
 	
@@ -85,21 +62,24 @@ class Comensal{
 	
 	method pasandoBuenRato(){
 		
-		return comidas.size()>0 && self.criterioComensal() . criterio(self)
-	// DELEGAR ESTEO EN UN METHOD
+		return self.cantComidasIngeridas() >0 && self.criterioComensal() . criterio(self)
+	}
+	
+	method cantComidasIngeridas(){
+		return comidas.size()
 	}
 }
 const lugarA = new Posicion (elementosQueTieneCerca= [1,2,3])
 const lugarB = new Posicion (elementosQueTieneCerca=[4,5,6] )
 
-const alex = new Comensal (lugar=lugarA, criterioPersona=cambiarPosicion, criterioComensal= facu, criterioComida= vegetariano)
-const lean = new Comensal (lugar=lugarB , criterioPersona=sordo, criterioComensal= moni, criterioComida= dietetico)
+const alex = new Comensal (lugar=lugarA, criterioPersona=cambiarPosicion, criterioComensal= criterioFacu, criterioComida= vegetariano)
+const lean = new Comensal (lugar=lugarB , criterioPersona=sordo, criterioComensal= criterioMoni, criterioComida= dietetico)
 
 
 // CRITERIOS DE PASAR ELEMENTOS
 object sordo{
 
-	method hacerEfecto(receptor, otorgador, elemento){
+	method generarCambioElemento(receptor, otorgador, elemento){
 		
 		receptor. lugar() . obtenerElemento( otorgador. lugar().elementosQueTieneCerca() . head() )
  		
@@ -110,7 +90,7 @@ object sordo{
 
 object todoLosElementos{
 	
-	method hacerEfecto(receptor, otorgador, elemento ){
+	method generarCambioElemento(receptor, otorgador, elemento ){
 		
 		receptor. lugar(). elementosQueTieneCerca(receptor.lugar() . elementosQueTieneCerca() + otorgador.lugar() .elementosQueTieneCerca())
 		otorgador. lugar(). elementosQueTieneCerca(null)
@@ -121,7 +101,7 @@ object cambiarPosicion{
 	
 	var auxPosicion 
 	
-	method hacerEfecto(receptor, otorgador, elemento){
+	method generarCambioElemento(receptor, otorgador, elemento){
 		auxPosicion = receptor. lugar()
 		
 		receptor.lugar(otorgador.lugar())
@@ -133,7 +113,7 @@ object cambiarPosicion{
 
 object normal{
 				
-		method hacerEfecto(receptor, otorgador, elemento){
+		method generarCambioElemento(receptor, otorgador, elemento){
 		
 		receptor. lugar() . obtenerElemento (elemento)
  		
@@ -143,11 +123,12 @@ object normal{
 
 // BANDEJA DE COMIDA
 class BandejaComida{
-		var productos= []  //CORREGIR hacer una variable si es vegetariano o no 
+	
 		var property calorias 
+		const vegetariano = true
 		
 		method esDeCarne(){
-				return productos.contains("carne")
+				return not vegetariano
 		}
 		
 		
@@ -174,17 +155,17 @@ object dietetico{
 }
 
 object alternado{
-	const criteriosComida = #{dietetico, vegetariano, self}  // AL AZAR ES UNO SI UNO NO 
+	var aleatoridad= false
 	
 	method puedoComer(comida){
-		criteriosComida.anyOne() . puedoComer(comida)
+		aleatoridad = not aleatoridad
+		return aleatoridad
 	}
 }
 
 class Combinacion{
 		 var criteriosComidaACumplir = #{}
-		
-		
+			
 		method puedoComer(comida){
 			return criteriosComidaACumplir.all({criterioComida=> criterioComida.puedoComer(comida) })
 		}
@@ -192,28 +173,28 @@ class Combinacion{
 
 //CRITERIO COMENSAL
 
-object osky{
+object criterioOsky{
 	
 	method criterio(persona){
 		return true
 	}
 }
 
-object moni{
+object criterioMoni{
 		
 		method criterio(persona){
 			return persona.lugar() == 1
 		}
 }
 
-object facu{
+object criterioFacu{
 		
 		method criterio(persona){
 			return not (persona. comidas()  . filter({comida => comida.esDeCarne()}) ). isEmpty()
 		}
 }
 
-object vero{
+object criterioVero{
 		
 		method criterio(persona){
 				return 3< persona.lugar() . elementosQueTieneCerca()
