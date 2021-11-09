@@ -40,9 +40,9 @@ class Comensal{
 	
 	var property criterioComida = vegetariano
 	
-	var comidas = []
+	var property comidas = []
 	
-	var property criterioComensal
+	var property criterioComensal 
 	
 	
 	method pedirElemento(elemento, persona){
@@ -86,13 +86,14 @@ class Comensal{
 	method pasandoBuenRato(){
 		
 		return comidas.size()>0 && self.criterioComensal() . criterio(self)
+	// DELEGAR ESTEO EN UN METHOD
 	}
 }
 const lugarA = new Posicion (elementosQueTieneCerca= [1,2,3])
 const lugarB = new Posicion (elementosQueTieneCerca=[4,5,6] )
 
-const alex = new Comensal (lugar=lugarA, criterioPersona=cambiarPosicion)
-const lean = new Comensal (lugar=lugarB , criterioPersona=sordo)
+const alex = new Comensal (lugar=lugarA, criterioPersona=cambiarPosicion, criterioComensal= facu, criterioComida= vegetariano)
+const lean = new Comensal (lugar=lugarB , criterioPersona=sordo, criterioComensal= moni, criterioComida= dietetico)
 
 
 // CRITERIOS DE PASAR ELEMENTOS
@@ -100,13 +101,9 @@ object sordo{
 
 	method hacerEfecto(receptor, otorgador, elemento){
 		
-		receptor. lugar() . obtenerElemento(
-			 otorgador. lugar().elementosQueTieneCerca() . first()
- 		)
+		receptor. lugar() . obtenerElemento( otorgador. lugar().elementosQueTieneCerca() . head() )
  		
- 		otorgador. lugar(). eliminarElemento(
- 			 otorgador. lugar().elementosQueTieneCerca()   . first()
- 		)
+ 		otorgador. lugar(). eliminarElemento(otorgador. lugar().elementosQueTieneCerca()  . head() )
 	}
 }
 
@@ -115,7 +112,7 @@ object todoLosElementos{
 	
 	method hacerEfecto(receptor, otorgador, elemento ){
 		
-		receptor. lugar(). elementosQueTieneCerca(receptor.lugar() . elementosQueTieneCerca()+ otorgador.lugar() .elementosQueTieneCerca())
+		receptor. lugar(). elementosQueTieneCerca(receptor.lugar() . elementosQueTieneCerca() + otorgador.lugar() .elementosQueTieneCerca())
 		otorgador. lugar(). elementosQueTieneCerca(null)
 	}
 }
@@ -138,19 +135,15 @@ object normal{
 				
 		method hacerEfecto(receptor, otorgador, elemento){
 		
-		receptor. lugar() . obtenerElemento (
-			 elemento
- 		)
+		receptor. lugar() . obtenerElemento (elemento)
  		
- 		otorgador. lugar(). eliminarElemento(
- 			 elemento
- 		)
+ 		otorgador. lugar(). eliminarElemento(elemento)
 	}
 }
 
 // BANDEJA DE COMIDA
 class BandejaComida{
-		var productos= []
+		var productos= []  //CORREGIR hacer una variable si es vegetariano o no 
 		var property calorias 
 		
 		method esDeCarne(){
@@ -181,14 +174,14 @@ object dietetico{
 }
 
 object alternado{
-	const criteriosComida = #{dietetico, vegetariano, self}
+	const criteriosComida = #{dietetico, vegetariano, self}  // AL AZAR ES UNO SI UNO NO 
 	
 	method puedoComer(comida){
 		criteriosComida.anyOne() . puedoComer(comida)
 	}
 }
 
-object combinacion{
+class Combinacion{
 		 var criteriosComidaACumplir = #{}
 		
 		
