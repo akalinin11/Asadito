@@ -190,7 +190,7 @@ object criterioMoni{
 object criterioFacu{
 		
 		method criterio(persona){
-			return not (persona. comidas()  . filter({comida => comida.esDeCarne()}) ). isEmpty()
+			return not (persona. comidas()  . filter({comida => comida.esDeCarne()}) ). isEmpty()  //usar any
 		}
 }
 

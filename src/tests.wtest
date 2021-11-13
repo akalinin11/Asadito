@@ -1,6 +1,76 @@
 
-test "testX" {
+// comensal que sabe su posicion y los elementos que tiene cerca 
+// cada comensal tiene un criterio sordo-todos los elementos-cambiarPosicion- normales
+// toda la pinta a composicion
+// cuando paso el elemento deja de estar cerca
 
-	assert.that(true)
 
+
+// bandeja con UNA comida, te dice si es de carne y las cantidade de calorias
+// persona decide si comer depende de: vegetariano-dietetico-alternado-combinacion de condiciones
+// tambien parece que es composicion 
+
+
+
+// pipon mensaje a comensal si alguna de las comidas que ingirio es pesada>500
+
+
+
+// saber si un comensal la paso bien que depende de ciertas cuestiones
+
+
+//Teorica 
+
+
+class Comensal{
+	var posicion=0
+	var property elementosQueTieneCerca = #{}
+	var property criterioPersona = sordo
+	
+	
+	method pedirElemento(elemento, persona){
+		
+		if(not persona.validarSiTIeneElemento(elemento)){
+			throw new DomainException(message = "La persona no tiene ese elemento")
+		}
+		else{
+			
+		elementosQueTieneCerca.add (self.conseguirElemento(persona, elemento) )	
+		persona.eliminarElemento(self.conseguirElemento(persona, elemento) )	 
+		}
+	}
+	
+	method validarSiTIeneElemento(elemento) = elementosQueTieneCerca.contains(elemento)
+	
+	method conseguirElemento(persona, elemento){
+		// criterio de la persona que otorga el elemento    //    lista de elementos que tiene cerca la persona que otorga el elemento 
+		
+		return (persona.criterioPersona() )   .       seleccionarElementoAPasar (persona.elementosQueTieneCerca() , elemento)
+		
+		// la linea anterior basicamente se otorga el elemento de la persona a la cual se lo pidio, siguiendo el criterio
+	}
+	
+	method eliminarElemento(elementoAEliminar){
+		elementosQueTieneCerca.remove(elementoAEliminar)
+	}
+	
+	
+	
+}
+
+const alex = new Comensal (posicion=0, elementosQueTieneCerca=[5,2,3], criterioPersona=sordo)
+const lean = new Comensal (posicion=0, elementosQueTieneCerca=[7,8,9], criterioPersona=sordo)
+
+object sordo{
+		method seleccionarElementoAPasar(elementos, elementoPedido){
+			return elementos. first()
+		}
+}
+
+
+object todoLosElementos{
+	
+			method seleccionarElementoAPasar(elementos, elementoPedido){
+			return elementos. first()
+		}
 }
